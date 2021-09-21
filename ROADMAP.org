@@ -26,7 +26,7 @@
 - [ ] eachSpread
 - [ ] every
 - [ ] except
-- [ ] filter
+- [X] filter
 - [ ] first
 - [ ] firstWhere
 - [ ] flatMap
@@ -112,7 +112,7 @@
 - [ ] unlessEmpty
 - [ ] unlessNotEmpty
 - [ ] unwrap
-- [ ] values
+- [X] values
 - [ ] when
 - [ ] whenEmpty
 - [ ] whenNotEmpty

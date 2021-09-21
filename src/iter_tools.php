@@ -14,6 +14,7 @@ namespace IterTools;
  * A few more things:
  * - Null is always treated as an empty collection. This means you don't have to do any checks before your data.
  * - For functions which require a specific format, the requirements will be listed with #[ArrayShape] or a documentation comment.
+ * - For functions which return an iterable, an array is the concrete format they'll be returned in.
  */
 
 if (!function_exists('IterTools\iter_all')) {
@@ -21,10 +22,11 @@ if (!function_exists('IterTools\iter_all')) {
     /**
      * Given any iterable, return it as an array.
      * @param iterable|null $iterable Your iterable, or null.
-     * @return iterable The iterable as an array. Or, an empty array for 'null'.
+     * @return array The iterable as an array. Or, an empty array for 'null'.
      */
-    function iter_all(?iterable $iterable): iterable
+    function iter_all(?iterable $iterable): array
     {
+        // TODO: Should respect keys, not just values.
         $finalArray = [];
 
         foreach ($iterable ?? [] as $item) {
@@ -77,5 +79,55 @@ if (!function_exists('IterTools\iter_reduce')) {
         }
 
         return $initialValue;
+    }
+}
+
+if (!function_exists('IterTools\iter_filter')) {
+
+    /**
+     * Filters an iterable. This accepts a predicate that, when it's true, will keep the item in the collection.
+     * If there is no predicate given, then anything falsey will be removed from the list.
+     *
+     * Note, that this will NOT re-index the keys of a non-assocative array. This means that you can wind up with
+     * gaps in the key, which can screw up things like JSON encoding. To avoid that, use iter_values
+     * @param iterable|null $iterable Your iterable, or null.
+     * @param callable|null $predicate The predicate, if any. This takes an item of the list and the key, and returns true or false.
+     * @return iterable Returns all the items for which the predicate held true.
+     */
+    function iter_filter(?iterable $iterable, ?callable $predicate = null): iterable
+    {
+        $localIterable = $iterable;
+
+        if (is_null($predicate)) {
+            $predicate = fn ($value, $key) => $value;
+        }
+
+        foreach ($localIterable ?? [] as $key => $value) {
+            if (!$predicate($value, $key)) {
+                unset($localIterable[$key]);
+            }
+        }
+
+        return $localIterable;
+    }
+}
+
+if (!function_exists('IterTools\iter_values')) {
+
+    /**
+     * Returns just the values from this array. This is useful to 'reset' the numeric index of an iterable that's been
+     * clobbered, or to turn an associative array into
+     * @param iterable|null $iterable Your iterable, or null.
+     * @return array All of the values in the iterable, as an array.
+     */
+    function iter_values(?iterable $iterable): array
+    {
+        $returnedArray = [];
+
+        foreach ($iterable ?? [] as $item) {
+            array_push($returnedArray, $item);
+        }
+
+        return $returnedArray;
     }
 }
