@@ -1,0 +1,21 @@
+{
+    "name": "natepisarski/iter-tools",
+    "version": "1.0.0",
+    "description": "Advanced collection utilities for any iterable.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nathaniel Pisarski",
+            "email": "nathanpisarski@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    }
+}
