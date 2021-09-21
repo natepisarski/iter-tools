@@ -16,6 +16,9 @@
     "autoload": {
         "classmap": [
             "src/"
+        ],
+        "files": [
+            "src/iter_tools.php"
         ]
     }
 }
