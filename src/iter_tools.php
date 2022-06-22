@@ -18,6 +18,8 @@ namespace IterTools;
  * - For functions which return an iterable, an array is the concrete format they'll be returned in.
  */
 
+use Exception;
+
 if (! function_exists('IterTools\iter_all')) {
 
   /**
@@ -138,7 +140,7 @@ if (! function_exists('IterTools\iter_map')) {
    * Runs this callable method on each item in this iterable. This will not modify the array, and will instead return
    * a new iterable as an array.
    * @param iterable|null $iterable
-   * @param callable|null $modifier
+   * @param callable|null $modifier A function that takes ($value, $key) and returns anything, or even nothing.
    * @return array
    */
   function iter_map(?iterable $iterable, ?callable $modifier = null): array
@@ -150,5 +152,64 @@ if (! function_exists('IterTools\iter_map')) {
     }
 
     return $modified;
+  }
+}
+
+if (! function_exists('IterTools\iter_contains')) {
+  /**
+   * Tests to see if this value is contained inside of this iterable. There are 3 distinct "modes" in which you can use
+   * this function:
+   *
+   * 1) A predicate. You can pass in a "($value, $key) => bool" predicate, and this will return true if one of the
+   *    elements returns true.
+   * 2) A literal. This will basically work like in_array(), except it will not use a strict comparison.
+   * 3) A key/value pair. This is the only time the 3rd argument gets used.
+   * @param iterable|null $iterable
+   * @param mixed $testOrKey A value of any type, or a string/int if "testForKeyValue" contains the value.
+   * @param mixed|null $testForKeyValue A value of any type. Only used when we are looking up a key/value pair.
+   * @return bool
+   * @throws Exception Throws an exception when the parameters given can't be turned into a sensible operation.
+   */
+  function iter_contains(?iterable $iterable, mixed $testOrKey, mixed $testForKeyValue = null): bool
+  {
+    if (! empty($testForKeyValue) && !(is_int($testOrKey) || is_string($testOrKey))) {
+      // If you call us with "testForKeyValue", you have to give us a key. Only ints or strings can be keys.
+      $type = get_debug_type($testOrKey);
+      throw new Exception("iter_contains must be given an integer or string for the key, $type given.");
+    }
+
+    if (! empty($testForKeyValue)) {
+      // They want to do a key/value search.
+      foreach ($iterable ?? [] as $key => $value) { // TODO: Replace this with a _.get()-like function once implemented
+        if ($key === $testOrKey) {
+          return $value == $testForKeyValue;
+        }
+      }
+
+      // Their key wasn't found in the entire array.
+      return false; // TODO: Can improve performance here by using array_key_exists if we know this is an array.
+    }
+
+    // By this point in the function, we know it's either a simple match or a callback
+    $matcher = is_callable($testOrKey) ? $testOrKey : fn (mixed $value) => $value == $testOrKey; // TODO: Can be replace by the "are" helper when/if implemented
+
+    foreach ($iterable as $key => $value) {
+      if ($matcher($value, $key)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+}
+
+if (! function_exists('IterTools\iter_some')) {
+  /** Alias for iter_contains
+   * @throws Exception
+   * @see iter_contains()
+   */
+  function iter_some(?iterable $iterable, mixed $testOrKey, mixed $testForKeyValue): bool
+  {
+    return iter_contains($iterable, $testOrKey, $testForKeyValue);
   }
 }

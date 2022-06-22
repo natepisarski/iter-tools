@@ -48,7 +48,7 @@
 - [ ] last
 - [ ] macro
 - [ ] make
-- [ ] map
+- [X] map
 - [ ] mapInto
 - [ ] mapSpread
 - [ ] mapToGroups

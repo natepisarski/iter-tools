@@ -1,10 +1,16 @@
 # Iter Tools
-This is a package that provides Collection utilities, similar to the ones found in Symphony, Laravel, or
-the PHP standard library.
+Use Laravel Collection methods on any kind of data: arrays, generator functions, laravel collections, literally anything.
 
-It is all coded against the `iterable` interface, so you can use this package with any kind of "list" data.
+This package maintains the exact same API that laravel's Collection class uses, except the first argument to
+each method is the Collection (since we're not using methods).
 
-You no longer have to check if what you have is an array, or a Collection, or a whatever-the-heck.
+# Purpose
+In a Laravel project, it's not uncommon to try to call `->map()` on an array. Or to call `array_map()` on a Collection.
+
+This package provides 1 consistent interface across all of these different data types. 
+
+# Special Notes
+- `null` is, for all intents and purposes, considered an empty Collection for this library. This prevents things like `iter_values($x)` from crashing.
 
 # API
-(This will be filled in when the package is 'complete')
+(This will be filled in when the package is 'complete'. See the ROADMAP org mode document for progress)
