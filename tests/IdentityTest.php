@@ -7,6 +7,7 @@ use function IterTools\iter_count;
 use function IterTools\iter_filter;
 use function IterTools\iter_map;
 use function IterTools\iter_reduce;
+use function IterTools\iter_some;
 use function IterTools\iter_values;
 
 final class IdentityTest extends TestCase
@@ -75,5 +76,37 @@ final class IdentityTest extends TestCase
       $resultArray = iter_map($ourArray, fn (int $x, string $key) => "{$key}-{$x}");
 
       $this->assertEquals(['a-1', 'b-2', 'c-3'], $resultArray);
+    }
+
+    /** Tests the contains/some function, making sure all 3 forms of it work. */
+    public function testContainsAndSome(): void
+    {
+      $ourArray = [
+        'a' => 1,
+        'b' => 2,
+        'c' => 3,
+      ];
+
+      $contains1 = iter_some($ourArray, 1);
+      $contains4 = iter_some($ourArray, 4);
+
+      $containsAEquals1 = iter_some($ourArray, 'a', 1);
+      $containsAEquals2 = iter_some($ourArray, 'a', 2);
+      $containsKEquals3 = iter_some($ourArray, 'k', 3);
+
+      $containsEven = iter_some($ourArray, fn (int $value) => $value % 2 === 0);
+      $containsCKey = iter_some($ourArray, fn (int $value, string $key) => $key === 'c');
+      $containsDKey = iter_some($ourArray, fn (int $value, string $key) => $key === 'd');
+
+      $this->assertTrue($contains1);
+      $this->assertFalse($contains4);
+
+      $this->assertTrue($containsAEquals1);
+      $this->assertFalse($containsAEquals2);
+      $this->assertFalse($containsKEquals3);
+
+      $this->assertTrue($containsEven);
+      $this->assertTrue($containsCKey);
+      $this->assertFalse($containsDKey);
     }
 }

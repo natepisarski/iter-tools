@@ -208,7 +208,7 @@ if (! function_exists('IterTools\iter_some')) {
    * @throws Exception
    * @see iter_contains()
    */
-  function iter_some(?iterable $iterable, mixed $testOrKey, mixed $testForKeyValue): bool
+  function iter_some(?iterable $iterable, mixed $testOrKey, mixed $testForKeyValue = null): bool
   {
     return iter_contains($iterable, $testOrKey, $testForKeyValue);
   }
