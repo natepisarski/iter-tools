@@ -5,6 +5,7 @@ use PHPUnit\Framework\TestCase;
 use function IterTools\iter_all;
 use function IterTools\iter_count;
 use function IterTools\iter_filter;
+use function IterTools\iter_map;
 use function IterTools\iter_reduce;
 use function IterTools\iter_values;
 
@@ -59,4 +60,20 @@ final class IdentityTest extends TestCase
         $this->assertNotEquals($ourArray, $resultArray);
     }
 
+    /** Tests iter_map to make sure that both value and key/value functions work. */
+    public function testMap(): void
+    {
+      $ourArray = [
+        'a' => 1,
+        'b' => 2,
+        'c' => 3,
+      ];
+
+      $resultArray = iter_map($ourArray, fn (int $x) => $x + 1);
+      $this->assertEquals([2, 3, 4], $resultArray);
+
+      $resultArray = iter_map($ourArray, fn (int $x, string $key) => "{$key}-{$x}");
+
+      $this->assertEquals(['a-1', 'b-2', 'c-3'], $resultArray);
+    }
 }

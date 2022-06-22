@@ -1,4 +1,5 @@
 <?php
+
 namespace IterTools;
 
 /*
@@ -17,117 +18,137 @@ namespace IterTools;
  * - For functions which return an iterable, an array is the concrete format they'll be returned in.
  */
 
-if (!function_exists('IterTools\iter_all')) {
+if (! function_exists('IterTools\iter_all')) {
 
-    /**
-     * Given any iterable, return it as an array.
-     * @param iterable|null $iterable Your iterable, or null.
-     * @return array The iterable as an array. Or, an empty array for 'null'.
-     */
-    function iter_all(?iterable $iterable): array
-    {
-        // TODO: Should respect keys, not just values.
-        $finalArray = [];
+  /**
+   * Given any iterable, return it as an array.
+   * @param iterable|null $iterable Your iterable, or null.
+   * @return array The iterable as an array. Or, an empty array for 'null'.
+   */
+  function iter_all(?iterable $iterable): array
+  {
+    // TODO: Should respect keys, not just values.
+    $finalArray = [];
 
-        foreach ($iterable ?? [] as $item) {
-            array_push($finalArray, $item);
-        }
-
-        return $finalArray;
+    foreach ($iterable ?? [] as $item) {
+      array_push($finalArray, $item);
     }
+
+    return $finalArray;
+  }
 }
 
-if (!function_exists('IterTools\iter_count')) {
+if (! function_exists('IterTools\iter_count')) {
 
-    /**
-     * Returns the overall number of items in this list.
-     * @param iterable|null $iterable Your iterable, or null
-     * @return int The number of items in the list. null items still count as items.
-     */
-    function iter_count(?iterable $iterable): int
-    {
-        $count = 0;
-        foreach ($iterable as $item) {
-            $count++;
-        }
-
-        return $count;
+  /**
+   * Returns the overall number of items in this list.
+   * @param iterable|null $iterable Your iterable, or null
+   * @return int The number of items in the list. null items still count as items.
+   */
+  function iter_count(?iterable $iterable): int
+  {
+    $count = 0;
+    foreach ($iterable as $item) {
+      $count++;
     }
+
+    return $count;
+  }
 }
 
-if (!function_exists('IterTools\iter_reduce')) {
+if (! function_exists('IterTools\iter_reduce')) {
 
-    /**
-     * Reduces an iterable to a single value.
-     * @param iterable|null $iterable Your iterable, or null
-     * @param callable $reducer Your function. This is a function of the form
-     *
-     *   ($carry, $item) => <NEW_CARRY> where $carry is the overall value so far, and $item is the current item in the list.
-     *
-     * The function can also take this form:
-     *
-     *   ($carry, $item, $key) => <NEW_CARRY>
-     *
-     * which is functionally the same, but the key of an associative array is passed in the $key variable.
-     * @param mixed|null $initialValue The initial value on the first step in reducing. Defaults to 'null'
-     * @return mixed The final value after each item has been reduced over.
-     */
-    function iter_reduce(?iterable $iterable, callable $reducer, mixed $initialValue = null): mixed
-    {
-        foreach ($iterable ?? [] as $key => $value) {
-            $initialValue = $reducer($initialValue, $value, $key);
-        }
-
-        return $initialValue;
+  /**
+   * Reduces an iterable to a single value.
+   * @param iterable|null $iterable Your iterable, or null
+   * @param callable $reducer Your function. This is a function of the form
+   *
+   *   ($carry, $item) => <NEW_CARRY> where $carry is the overall value so far, and $item is the current item in the list.
+   *
+   * The function can also take this form:
+   *
+   *   ($carry, $item, $key) => <NEW_CARRY>
+   *
+   * which is functionally the same, but the key of an associative array is passed in the $key variable.
+   * @param mixed|null $initialValue The initial value on the first step in reducing. Defaults to 'null'
+   * @return mixed The final value after each item has been reduced over.
+   */
+  function iter_reduce(?iterable $iterable, callable $reducer, mixed $initialValue = null): mixed
+  {
+    foreach ($iterable ?? [] as $key => $value) {
+      $initialValue = $reducer($initialValue, $value, $key);
     }
+
+    return $initialValue;
+  }
 }
 
-if (!function_exists('IterTools\iter_filter')) {
+if (! function_exists('IterTools\iter_filter')) {
 
-    /**
-     * Filters an iterable. This accepts a predicate that, when it's true, will keep the item in the collection.
-     * If there is no predicate given, then anything falsey will be removed from the list.
-     *
-     * Note, that this will NOT re-index the keys of a non-assocative array. This means that you can wind up with
-     * gaps in the key, which can screw up things like JSON encoding. To avoid that, use iter_values
-     * @param iterable|null $iterable Your iterable, or null.
-     * @param callable|null $predicate The predicate, if any. This takes an item of the list and the key, and returns true or false.
-     * @return iterable Returns all the items for which the predicate held true.
-     */
-    function iter_filter(?iterable $iterable, ?callable $predicate = null): iterable
-    {
-        $localIterable = $iterable;
+  /**
+   * Filters an iterable. This accepts a predicate that, when it's true, will keep the item in the collection.
+   * If there is no predicate given, then anything falsey will be removed from the list.
+   *
+   * Note, that this will NOT re-index the keys of a non-assocative array. This means that you can wind up with
+   * gaps in the key, which can screw up things like JSON encoding. To avoid that, use iter_values
+   * @param iterable|null $iterable Your iterable, or null.
+   * @param callable|null $predicate The predicate, if any. This takes an item of the list and the key, and returns true or false.
+   * @return iterable Returns all the items for which the predicate held true.
+   */
+  function iter_filter(?iterable $iterable, ?callable $predicate = null): iterable
+  {
+    $localIterable = $iterable;
 
-        if (is_null($predicate)) {
-            $predicate = fn ($value, $key) => $value;
-        }
-
-        foreach ($localIterable ?? [] as $key => $value) {
-            if (!$predicate($value, $key)) {
-                unset($localIterable[$key]);
-            }
-        }
-
-        return $localIterable;
+    if (is_null($predicate)) {
+      $predicate = fn ($value, $key) => $value;
     }
+
+    foreach ($localIterable ?? [] as $key => $value) {
+      if (! $predicate($value, $key)) {
+        unset($localIterable[$key]);
+      }
+    }
+
+    return $localIterable;
+  }
 }
 
-if (!function_exists('IterTools\iter_values')) {
+if (! function_exists('IterTools\iter_values')) {
 
-    /**
-     * Returns just the values from this array. This is useful to 'reset' the numeric index of an iterable that's been
-     * clobbered, or to turn an associative array into
-     * @param iterable|null $iterable Your iterable, or null.
-     * @return array All of the values in the iterable, as an array.
-     */
-    function iter_values(?iterable $iterable): array
-    {
-        $returnedArray = [];
+  /**
+   * Returns just the values from this array. This is useful to 'reset' the numeric index of an iterable that's been
+   * clobbered, or to turn an associative array into
+   * @param iterable|null $iterable Your iterable, or null.
+   * @return array All of the values in the iterable, as an array.
+   */
+  function iter_values(?iterable $iterable): array
+  {
+    $returnedArray = [];
 
-        foreach ($iterable ?? [] as $item) {
-            array_push($returnedArray, $item);
-        }
-
-        return $returnedArray;
+    foreach ($iterable ?? [] as $item) {
+      array_push($returnedArray, $item);
     }
+
+    return $returnedArray;
+  }
+}
+
+if (! function_exists('IterTools\iter_map')) {
+  /**
+   * Runs this callable method on each item in this iterable. This will not modify the array, and will instead return
+   * a new iterable as an array.
+   * @param iterable|null $iterable
+   * @param callable|null $modifier
+   * @return array
+   */
+  function iter_map(?iterable $iterable, ?callable $modifier = null): array
+  {
+    $modified = [];
+
+    foreach ($iterable as $key => $value) {
+      $modified[] = $modifier($value, $key);
+    }
+
+    return $modified;
+  }
 }
