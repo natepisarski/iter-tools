@@ -6,6 +6,7 @@ use function IterTools\iter_all;
 use function IterTools\iter_count;
 use function IterTools\iter_filter;
 use function IterTools\iter_map;
+use function IterTools\iter_push;
 use function IterTools\iter_reduce;
 use function IterTools\iter_some;
 use function IterTools\iter_values;
@@ -108,5 +109,13 @@ final class IdentityTest extends TestCase
       $this->assertTrue($containsEven);
       $this->assertTrue($containsCKey);
       $this->assertFalse($containsDKey);
+    }
+
+    public function testPush()
+    {
+      $ourArray = [1, 2, 3];
+      $value = iter_push($ourArray, 5);
+
+      $this->assertEquals([1, 2, 3, 5], $value);
     }
 }

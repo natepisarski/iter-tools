@@ -213,3 +213,19 @@ if (! function_exists('IterTools\iter_some')) {
     return iter_contains($iterable, $testOrKey, $testForKeyValue);
   }
 }
+
+if (! function_exists('IterTools\iter_push')) {
+  /**
+   * Pushes an item to the end of the collection.
+   * @param iterable|null $iterable The iterable
+   * @param mixed $item The item to push to the end. If this is another iterable, it WILL NOT be merged in.
+   * @return array
+   */
+  function iter_push(?iterable $iterable, mixed $item): array
+  {
+    return [
+      ...($iterable ?? []),
+      $item,
+    ];
+  }
+}

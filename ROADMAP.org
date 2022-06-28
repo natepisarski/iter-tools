@@ -1,6 +1,6 @@
 -*- mode: org -*-
 
-* Iter Tools method roadmap
+* Iter Tools method roadmap [8/128]
 - [X] all
 - [ ] average
 - [ ] avg
@@ -10,7 +10,7 @@
 - [ ] collect
 - [ ] combine
 - [ ] concat
-- [ ] contains
+- [X] contains
 - [ ] containsStrict
 - [X] count
 - [ ] countBy
@@ -86,7 +86,7 @@
 - [ ] skipWhile
 - [ ] slice
 - [ ] sole
-- [ ] some
+- [X] some
 - [ ] sort
 - [ ] sortBy
 - [ ] sortByDesc
