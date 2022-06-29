@@ -282,3 +282,55 @@ if (! function_exists('IterTools\pure_iter_pop')) {
     return [$finalItem, $returnedArray];
   }
 }
+
+if (! function_exists('IterTools\iter_skip')) {
+  /**
+   * Only takes in a certain amount of items from the list.
+   * @param iterable|null $iterable
+   * @param int $length How many items to accept.
+   * @return array
+   */
+  function iter_take(?iterable $iterable, int $length): iterable
+  {
+    if ($length < 0) {
+      $length = 0;
+    }
+
+    if ($length === 0) {
+      return [];
+    }
+
+    $returnArray = [];
+
+    foreach ($iterable ?? [] as $key => $value) {
+      if ($length === 0) {
+        return $returnArray;
+      }
+
+      $length--;
+
+      $returnArray[$key] = $value;
+    }
+
+    return $iterable; // We ran out of members in the iterable before our length, so that means we skip the whole thing.
+  }
+}
+
+if (! function_exists('IterTools\iter_slice')) {
+  /**
+   * Returns a slice from this iterable. A slice is a sub-section of the iterable.
+   * By default, keys are preserved. You can use 'iter_values' to re-index them.
+   * @param iterable|null $iterable
+   * @param int|null $length Optional argument you can use to define a max length
+   * @return array The slice of the iterable which you asked for.
+   */
+  function iter_slice(?iterable $iterable, ?int $length = null): array
+  {
+    $slice = [];
+
+    foreach ($iterable ?? [] as $key => $value) {
+
+    }
+    return []; // TODO: Finish this one
+  }
+}

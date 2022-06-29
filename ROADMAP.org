@@ -1,6 +1,6 @@
 -*- mode: org -*-
 
-* Iter Tools method roadmap [8/128]
+* Iter Tools method roadmap [9/128]
 - [X] all
 - [ ] average
 - [ ] avg
@@ -66,7 +66,7 @@
 - [ ] pipe
 - [ ] pipeInto
 - [ ] pluck
-- [ ] pop
+- [X] pop
 - [ ] prepend
 - [ ] pull
 - [ ] push
