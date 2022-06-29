@@ -150,4 +150,16 @@ final class IdentityTest extends TestCase
       $this->assertEquals([], iter_take($ourArray, 0));
       $this->assertEquals(['a' => 1, 'b' => 2], iter_take($ourArray, 2));
     }
+
+    public function testTake()
+    {
+      $ourArray = [1, 2, 3, 4, 5];
+
+      $this->assertEquals([3, 4, 5], iter_values(iter_skip($ourArray, 2)));
+      $this->assertEquals([], iter_skip($ourArray, 5000));
+
+      $ourArray = ['a' => 1, 'b' => 2, 'c' => 3];
+      $this->assertEquals(['a' => 1,  'b' => 2, 'c' => 3], iter_skip($ourArray, 0));
+      $this->assertEquals(['c' => 3], iter_skip($ourArray, 2));
+    }
 }

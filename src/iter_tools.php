@@ -316,6 +316,37 @@ if (! function_exists('IterTools\iter_skip')) {
   }
 }
 
+if (! function_exists('IterTools\iter_skip')) {
+  /**
+   * Skips a certain number of elements on the front of the array. After the skipped elements, the remaining ones are
+   * returned as-is.
+   * @param iterable|null $iterable Returns an array if we skip anything, or your data type if nothing is skipped.
+   * @param int $length How many items to skip.
+   * @return iterable
+   */
+  function iter_skip(?iterable $iterable, int $length): iterable
+  {
+    if ($length < 0) {
+      $length = 0;
+    }
+
+    if ($length === 0) {
+      return $iterable;
+    }
+
+    $returnArray = [];
+    foreach ($iterable ?? [] as $key => $value) {
+      if ($length <= 0) {
+        $returnArray[$key] = $value;
+      }
+
+      $length--;
+    }
+
+    return $returnArray;
+  }
+}
+
 if (! function_exists('IterTools\iter_slice')) {
   /**
    * Returns a slice from this iterable. A slice is a sub-section of the iterable.

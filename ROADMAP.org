@@ -1,6 +1,6 @@
 -*- mode: org -*-
 
-* Iter Tools method roadmap [9/128]
+* Iter Tools method roadmap [11/128]
 - [X] all
 - [ ] average
 - [ ] avg
@@ -81,7 +81,7 @@
 - [ ] shift
 - [ ] shuffle
 - [ ] sliding
-- [ ] skip
+- [X] skip
 - [ ] skipUntil
 - [ ] skipWhile
 - [ ] slice
@@ -97,7 +97,7 @@
 - [ ] split
 - [ ] splitIn
 - [ ] sum
-- [ ] take
+- [X] take
 - [ ] takeUntil
 - [ ] takeWhile
 - [ ] tap
