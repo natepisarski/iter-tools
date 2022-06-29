@@ -364,3 +364,116 @@ if (! function_exists('IterTools\iter_slice')) {
     return iter_take(iter_skip($iterable, $start), $length);
   }
 }
+
+if (! function_exists('IterTools\iter_has')) {
+
+  /**
+   * Test to see if an iterable has a key / keys.
+   * @param iterable|null $iterable
+   * @param mixed $key A key, or an iterable of keys to check for. If this is an iterable, ALL keys must be present.
+   * @return bool True if all keys are found, false otherwise.
+   */
+  function iter_has(?iterable $iterable, mixed $key): bool
+  {
+    if (! is_iterable($key)) {
+      $key = [$key];
+    }
+
+    // TODO: Definitely a more efficient algorithm to use here
+    foreach ($key as $desiredKey) {
+      foreach ($iterable as $listKey => $listValue) {
+        if ($listKey === $desiredKey) {
+          continue 2;
+        }
+      }
+      // If we made it here, it means a key wasn't found in the list
+      return false;
+    }
+
+    return true;
+  }
+}
+
+if (! function_exists('IterTools\iter_sole')) {
+
+  /**
+   * Returns the sole item of an iterable. This can be used in 3 distinct ways.
+   *
+   * 1) With no argument, we return the first element of the list (if there is ONLY ONE ELEMENT). If there is more than
+   *    one element, then an MultipleItemsFoundException is thrown. If there are no items, an ItemNotFoundException is thrown.
+   * 2) With a callable function  we return the first element to return true on this element. The function can take
+   *    ($value, $key). If more than one item is found, MultipleItemsFoundException is thrown. ItemNotFoundException is returnd
+   *    if there are no valid items.
+   * 3) With a key/value pair (array, Collection, etc), the first element to match exactly is returned. If there are none,
+   *    the ItemNotFoundException is thrown again. This can't have a MultipleItemsFoundException since each array must
+   *    contain unique keys.
+   * @param iterable|null $iterable
+   * @param callable|iterable|null $argument
+   * @return mixed
+   * @throws ItemNotFoundException
+   * @throws MultipleItemsFoundException
+   */
+  function iter_sole(?iterable $iterable, callable|iterable|null $argument = null): mixed
+  {
+    $iterable ??= [];
+
+    if (is_null($argument)) {
+      // Mode 1: List Mode
+      $count = iter_count($iterable);
+
+      if ($count === 0) {
+        throw new ItemNotFoundException;
+      }
+      if ($count > 1) {
+        throw new MultipleItemsFoundException;
+      }
+
+      return $iterable[0];
+    }
+
+    if (is_callable($argument)) {
+      $foundItem = null;
+      $wasItemFound = false; // We have to track this separately because null may be the item we're looking for.
+      foreach ($iterable as $key => $value) {
+        if ($argument($value, $key)) {
+          if (($wasItemFound)) {
+            // An item was already found
+            throw new MultipleItemsFoundException;
+          }
+
+          $foundItem = $value;
+          $wasItemFound = true;
+        }
+      }
+
+      if (! $wasItemFound) {
+        throw new ItemNotFoundException;
+      }
+      return $foundItem;
+    }
+
+    // At this point, we just hope that 'argument' was a key/value pair. If not, this line will throw a PHP Error.
+    if (iter_count($iterable) > 1) {
+      // They have passed in more than 1 key/value pairs. We can't do anything with this
+      throw new ItemNotFoundException;
+    }
+
+    if (! iter_has($iterable, $argument)) {
+      throw new ItemNotFoundException;
+    }
+
+    foreach ($argument as $key => $value) {
+      // TODO: There must be a less jank way of doing this, probably with a new function. This loop's only purpose
+      // is to extract the key
+      $listValue = $iterable[$key];
+      if ($listValue !== $value) {
+        throw new ItemNotFoundException;
+      }
+
+      return $listValue;
+    }
+
+    // If we get to this point in the code, it means that the argument they gave us was not in one of the three known forms.
+    throw new ItemNotFoundException;
+  }
+}
