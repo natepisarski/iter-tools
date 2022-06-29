@@ -10,6 +10,7 @@ use function IterTools\iter_pop;
 use function IterTools\iter_push;
 use function IterTools\iter_reduce;
 use function IterTools\iter_skip;
+use function IterTools\iter_slice;
 use function IterTools\iter_some;
 use function IterTools\iter_take;
 use function IterTools\iter_values;
@@ -161,5 +162,11 @@ final class IdentityTest extends TestCase
       $ourArray = ['a' => 1, 'b' => 2, 'c' => 3];
       $this->assertEquals(['a' => 1,  'b' => 2, 'c' => 3], iter_skip($ourArray, 0));
       $this->assertEquals(['c' => 3], iter_skip($ourArray, 2));
+    }
+
+    public function testSlice()
+    {
+      $ourArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      $this->assertEquals([2 => 3, 3 => 4], iter_slice($ourArray, 2, 2));
     }
 }

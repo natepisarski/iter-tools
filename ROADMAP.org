@@ -1,6 +1,6 @@
 -*- mode: org -*-
 
-* Iter Tools method roadmap [11/128]
+* Iter Tools method roadmap [12/128]
 - [X] all
 - [ ] average
 - [ ] avg
@@ -84,7 +84,7 @@
 - [X] skip
 - [ ] skipUntil
 - [ ] skipWhile
-- [ ] slice
+- [X] slice
 - [ ] sole
 - [X] some
 - [ ] sort

@@ -352,16 +352,15 @@ if (! function_exists('IterTools\iter_slice')) {
    * Returns a slice from this iterable. A slice is a sub-section of the iterable.
    * By default, keys are preserved. You can use 'iter_values' to re-index them.
    * @param iterable|null $iterable
+   * @param int $start The INDEX to start the slice on
    * @param int|null $length Optional argument you can use to define a max length
    * @return array The slice of the iterable which you asked for.
    */
-  function iter_slice(?iterable $iterable, ?int $length = null): array
+  function iter_slice(?iterable $iterable, int $start, ?int $length = null): array
   {
-    $slice = [];
-
-    foreach ($iterable ?? [] as $key => $value) {
-
-    }
-    return []; // TODO: Finish this one
+    // NOTE: This doubles the time complexity of this function. If you add a backdoor in iter_take where a negative
+    // value returns the entire list, you can make this twice as efficient.
+    $length ??= iter_count($iterable);
+    return iter_take(iter_skip($iterable, $start), $length);
   }
 }
