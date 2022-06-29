@@ -230,7 +230,7 @@ if (! function_exists('IterTools\iter_push')) {
   }
 }
 
-if (! function_exists('IterTools\pop')) {
+if (! function_exists('IterTools\iter_pop')) {
 
   /**
    * "Pops" the last element off of this iterable. This will modify the array in-place, removing the final element
@@ -241,10 +241,26 @@ if (! function_exists('IterTools\pop')) {
    */
   function iter_pop(?iterable &$iterable): mixed
   {
+    [$item, $array] = pure_iter_pop($iterable);
+    $iterable = $array;
+    return $item;
+  }
+}
+
+if (! function_exists('IterTools\pure_iter_pop')) {
+
+  /**
+   * Performs the same operation as iter_pop, except it won't modify the array in place.
+   * It will return a tuple of the array and item.
+   * @param iterable|null $iterable
+   * @return array Returns a 2-member array, of the form '[$lastValue, $poppedArray]'
+   */
+  function pure_iter_pop(?iterable $iterable): array
+  {
     $count = iter_count($iterable ?? []);
 
     if ($count === 0) {
-      return null;
+      return [null, $iterable];
     }
 
     $returnedArray = [];
@@ -262,8 +278,7 @@ if (! function_exists('IterTools\pop')) {
     }
 
     $finalItem = $iterable[$count - 1];
-    $iterable = $returnedArray;
 
-    return $finalItem;
+    return [$finalItem, $returnedArray];
   }
 }
