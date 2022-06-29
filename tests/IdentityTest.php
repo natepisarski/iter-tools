@@ -6,6 +6,7 @@ use function IterTools\iter_all;
 use function IterTools\iter_count;
 use function IterTools\iter_filter;
 use function IterTools\iter_map;
+use function IterTools\iter_pop;
 use function IterTools\iter_push;
 use function IterTools\iter_reduce;
 use function IterTools\iter_some;
@@ -117,5 +118,22 @@ final class IdentityTest extends TestCase
       $value = iter_push($ourArray, 5);
 
       $this->assertEquals([1, 2, 3, 5], $value);
+    }
+
+    public function testPop()
+    {
+      $ourArray = [1, 2, 3];
+      $lastItem = iter_pop($ourArray);
+
+      $this->assertEquals(3, $lastItem);
+      $this->assertEquals([1, 2], $ourArray);
+
+      $ourArray = [];
+
+      $this->assertEquals(null, iter_pop($ourArray));
+
+      $ourArray = null;
+      $this->assertEquals(null, iter_pop($ourArray));
+      $this->assertEquals(null, $ourArray);
     }
 }

@@ -229,3 +229,41 @@ if (! function_exists('IterTools\iter_push')) {
     ];
   }
 }
+
+if (! function_exists('IterTools\pop')) {
+
+  /**
+   * "Pops" the last element off of this iterable. This will modify the array in-place, removing the final element
+   * from the Array. This will not preserve any keys. If an empty array is given, it will return "null" and not modify
+   * the array.
+   * @param iterable|null $iterable The iterable, or null. If it's null, it will remain null after the operation.
+   * @return mixed
+   */
+  function iter_pop(?iterable &$iterable): mixed
+  {
+    $count = iter_count($iterable ?? []);
+
+    if ($count === 0) {
+      return null;
+    }
+
+    $returnedArray = [];
+    $currentCount = -1;
+
+    foreach ($iterable as $value) {
+      $currentCount++;
+
+      if ($currentCount === $count - 1) {
+        // We are on the final item of the array, so let's just skip this item.
+        continue;
+      }
+
+      $returnedArray[] = $value;
+    }
+
+    $finalItem = $iterable[$count - 1];
+    $iterable = $returnedArray;
+
+    return $finalItem;
+  }
+}
