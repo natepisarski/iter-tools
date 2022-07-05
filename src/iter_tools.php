@@ -516,3 +516,32 @@ if (! function_exists('IterTools\iter_each')) {
     return $iterable;
   }
 }
+
+if (! function_exists('IterTools\iter_get')) {
+  /**
+   * Gets the item at this key. If the key isn't found, the default value is returned - which is null by default.
+   * If your default value is callable, it's executed with no arguments. This way you can pass in a "thunk" to have its
+   * value returned.
+   * @param iterable|null $iterable
+   * @param string|int $key
+   * @param mixed|null $defaultValue
+   * @return mixed
+   */
+  function iter_get(?iterable $iterable, string|int $key, mixed $defaultValue = null): mixed
+  {
+    $getDefault = fn () => is_callable($defaultValue) ? $defaultValue() : $defaultValue;
+
+    if (empty($iterable)) {
+      return $getDefault();
+    }
+
+    // TODO: Can probably be significantly more performant
+    foreach ($iterable as $iterableKey => $value) {
+      if ($key === $iterableKey) {
+        return $value;
+      }
+    }
+
+    return $getDefault();
+  }
+}

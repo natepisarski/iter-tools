@@ -1,6 +1,6 @@
 -*- mode: org -*-
 
-* Iter Tools method roadmap [14/128]
+* Iter Tools method roadmap [16/128]
 - [X] all
 - [ ] average
 - [ ] avg
@@ -34,9 +34,9 @@
 - [ ] flip
 - [ ] forget
 - [ ] forPage
-- [ ] get
+- [X] get
 - [ ] groupBy
-- [ ] has
+- [X] has
 - [ ] implode
 - [ ] intersect
 - [ ] intersectByKeys
