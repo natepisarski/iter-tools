@@ -172,7 +172,7 @@ if (! function_exists('IterTools\iter_contains')) {
    */
   function iter_contains(?iterable $iterable, mixed $testOrKey, mixed $testForKeyValue = null): bool
   {
-    if (! empty($testForKeyValue) && !(is_int($testOrKey) || is_string($testOrKey))) {
+    if (! empty($testForKeyValue) && ! (is_int($testOrKey) || is_string($testOrKey))) {
       // If you call us with "testForKeyValue", you have to give us a key. Only ints or strings can be keys.
       $type = get_debug_type($testOrKey);
       throw new Exception("iter_contains must be given an integer or string for the key, $type given.");
@@ -478,7 +478,7 @@ if (! function_exists('IterTools\iter_sole')) {
   }
 }
 
-if ((! function_exists('IterTools\iter_every'))) {
+if (! function_exists('IterTools\iter_every')) {
   /**
    * Determine if the predicate holds true for each item in the list. If the list is empty or null, we return true.
    * @param iterable|null $iterable
@@ -494,5 +494,25 @@ if ((! function_exists('IterTools\iter_every'))) {
     }
 
     return true;
+  }
+}
+
+if (! function_exists('IterTools\iter_each')) {
+  /**
+   * Passes each element of the list to the given function. You can have your function return 'false' to stop execution
+   * of the function.
+   * @param iterable|null $iterable
+   * @param callable $function A function which takes (value, key) => void|bool (false to stop execution)
+   * @return iterable|null Returns whatever was passed in as the iterable.
+   */
+  function iter_each(?iterable $iterable, callable $function): ?iterable
+  {
+    foreach ($iterable ?? [] as $key => $value) {
+      if ($function($value, $key) === false) {
+        break;
+      }
+    }
+
+    return $iterable;
   }
 }

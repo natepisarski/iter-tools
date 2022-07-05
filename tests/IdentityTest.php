@@ -5,6 +5,7 @@ use IterTools\MultipleItemsFoundException;
 use PHPUnit\Framework\TestCase;
 use function IterTools\iter_all;
 use function IterTools\iter_count;
+use function IterTools\iter_each;
 use function IterTools\iter_every;
 use function IterTools\iter_filter;
 use function IterTools\iter_has;
@@ -221,5 +222,32 @@ final class IdentityTest extends TestCase
 
       $ourArray = [2, 3, 4, 6, 8];
       $this->assertFalse(iter_every($ourArray, $isEven));
+    }
+
+    public function testEach()
+    {
+      // Test basic functionality
+      $ourArray = [1, 2, 3, 4, 5];
+      $pushArray = [];
+
+      $basicPusher = function (int $item) use (&$pushArray) {
+        $pushArray = [...$pushArray, $item];
+      };
+
+      iter_each($ourArray, $basicPusher);
+      $this->assertEquals([1, 2, 3, 4, 5], $pushArray);
+
+      // Test early return
+      $advancedPusher = function (int $item) use (&$pushArray) {
+        if ($item === 3) {
+          return false;
+        }
+
+        $pushArray = [...$pushArray, $item];
+      };
+
+      $pushArray = [];
+      iter_each($ourArray, $advancedPusher);
+      $this->assertEquals([1, 2], $pushArray);
     }
 }
