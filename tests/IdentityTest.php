@@ -5,6 +5,7 @@ use IterTools\MultipleItemsFoundException;
 use PHPUnit\Framework\TestCase;
 use function IterTools\iter_all;
 use function IterTools\iter_count;
+use function IterTools\iter_every;
 use function IterTools\iter_filter;
 use function IterTools\iter_has;
 use function IterTools\iter_map;
@@ -209,5 +210,16 @@ final class IdentityTest extends TestCase
       // Scenario 3: With a key/value pair
       $ourArray = ['a' => 1, 'b' => 2, 'c' => 3];
       $this->assertEquals(2, iter_sole($ourArray, ['b' => 2]));
+    }
+
+    public function testEvery()
+    {
+      $isEven = fn (int $x) => $x % 2 === 0;
+
+      $ourArray = [2, 4, 6, 8];
+      $this->assertTrue(iter_every($ourArray, $isEven));
+
+      $ourArray = [2, 3, 4, 6, 8];
+      $this->assertFalse(iter_every($ourArray, $isEven));
     }
 }

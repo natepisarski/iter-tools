@@ -477,3 +477,22 @@ if (! function_exists('IterTools\iter_sole')) {
     throw new ItemNotFoundException;
   }
 }
+
+if ((! function_exists('IterTools\iter_every'))) {
+  /**
+   * Determine if the predicate holds true for each item in the list. If the list is empty or null, we return true.
+   * @param iterable|null $iterable
+   * @param callable $predicate A predicate, which takes (value, key) => Boolean
+   * @return bool True if every item in the list passes, false otherwise.
+   */
+  function iter_every(?iterable $iterable, callable $predicate): bool
+  {
+    foreach ($iterable ?? [] as $key => $item) {
+      if (! $predicate($item, $key)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+}

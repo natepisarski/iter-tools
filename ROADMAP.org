@@ -1,6 +1,6 @@
 -*- mode: org -*-
 
-* Iter Tools method roadmap [12/128]
+* Iter Tools method roadmap [13/128]
 - [X] all
 - [ ] average
 - [ ] avg
@@ -24,7 +24,7 @@
 - [ ] duplicatesStrict
 - [ ] each
 - [ ] eachSpread
-- [ ] every
+- [X] every
 - [ ] except
 - [X] filter
 - [ ] first
