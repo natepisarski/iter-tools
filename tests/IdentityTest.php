@@ -6,12 +6,14 @@ use PHPUnit\Framework\TestCase;
 use function IterTools\iter_all;
 use function IterTools\iter_count;
 use function IterTools\iter_each;
+use function IterTools\iter_empty;
 use function IterTools\iter_every;
 use function IterTools\iter_filter;
 use function IterTools\iter_get;
 use function IterTools\iter_has;
 use function IterTools\iter_keys;
 use function IterTools\iter_map;
+use function IterTools\iter_not_empty;
 use function IterTools\iter_pop;
 use function IterTools\iter_push;
 use function IterTools\iter_reduce;
@@ -283,5 +285,19 @@ final class IdentityTest extends TestCase
       $this->assertEquals([0, 1, 2, 3], iter_keys($ourArray));
 
       $this->assertEquals([], iter_keys(null));
+    }
+
+    public function testEmpty()
+    {
+      $this->assertTrue(iter_empty([]));
+      $this->assertTrue(iter_empty(null));
+      $this->assertFalse(iter_empty([1]));
+    }
+
+    public function testNotEmpty()
+    {
+      $this->assertFalse(iter_not_empty([]));
+      $this->assertFalse(iter_not_empty(null));
+      $this->assertTrue(iter_not_empty([1]));
     }
 }

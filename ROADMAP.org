@@ -1,6 +1,6 @@
 -*- mode: org -*-
 
-* Iter Tools method roadmap [17/128]
+* Iter Tools method roadmap [19/128]
 - [X] all
 - [ ] average
 - [ ] avg
@@ -40,8 +40,8 @@
 - [ ] implode
 - [ ] intersect
 - [ ] intersectByKeys
-- [ ] isEmpty
-- [ ] isNotEmpty
+- [X] isEmpty
+- [X] isNotEmpty
 - [ ] join
 - [ ] keyBy
 - [X] keys

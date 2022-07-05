@@ -557,3 +557,55 @@ if (! function_exists('IterTools\iter_keys')) {
     return iter_map($iterable, fn ($value, $key) => $key);
   }
 }
+
+if (! function_exists('IterTools\iter_empty')) {
+  /**
+   * Determine if this iterable is empty (i.e null, or containing no items).
+   * @param iterable|null $iterable
+   * @return bool
+   */
+ function iter_empty(?iterable $iterable): bool
+ {
+   foreach ($iterable ?? [] as $value) {
+     return false;
+   }
+
+   return true;
+ }
+}
+
+if (! function_exists('IterTools\iter_is_empty')) {
+  /**
+   * Alias for iter_empty which matches Laravel's name.
+   * @param iterable|null $iterable
+   * @return bool
+   */
+  function iter_is_empty(?iterable $iterable): bool
+  {
+    return iter_empty($iterable);
+  }
+}
+
+if (! function_exists('IterTools\iter_not_empty')) {
+  /**
+   * Negation of iter_empty. This will return true if any item exists in the list.
+   * @param iterable|null $iterable
+   * @return bool
+   */
+  function iter_not_empty(?iterable $iterable): bool
+  {
+    return ! iter_empty($iterable);
+  }
+}
+
+if (! function_exists('IterTools\iter_is_not_empty')) {
+  /**
+   * Alias for iter_not_empty that matches Laravel's name.
+   * @param iterable|null $iterable
+   * @return bool
+   */
+  function iter_is_not_empty(?iterable $iterable): bool
+  {
+    return iter_not_empty($iterable);
+  }
+}
