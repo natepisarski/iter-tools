@@ -10,6 +10,7 @@ use function IterTools\iter_every;
 use function IterTools\iter_filter;
 use function IterTools\iter_get;
 use function IterTools\iter_has;
+use function IterTools\iter_keys;
 use function IterTools\iter_map;
 use function IterTools\iter_pop;
 use function IterTools\iter_push;
@@ -265,5 +266,22 @@ final class IdentityTest extends TestCase
       $this->assertEquals(4, iter_get($ourArray, 'john', 4)); // Scalar default values
 
       $this->assertEquals(10, iter_get($ourArray, 'john', fn () => 10)); // Thunk
+    }
+
+    public function testKeys()
+    {
+      $ourArray = [
+        'jack' => 2,
+        'jim' => 15,
+        'joe' => 2,
+      ];
+
+      $this->assertEquals(['jack', 'jim', 'joe'], iter_keys($ourArray));
+
+      $ourArray = [1, 2, 3, 4];
+
+      $this->assertEquals([0, 1, 2, 3], iter_keys($ourArray));
+
+      $this->assertEquals([], iter_keys(null));
     }
 }

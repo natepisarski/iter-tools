@@ -50,7 +50,7 @@ if (! function_exists('IterTools\iter_count')) {
   function iter_count(?iterable $iterable): int
   {
     $count = 0;
-    foreach ($iterable as $item) {
+    foreach ($iterable ?? [] as $item) {
       $count++;
     }
 
@@ -147,7 +147,7 @@ if (! function_exists('IterTools\iter_map')) {
   {
     $modified = [];
 
-    foreach ($iterable as $key => $value) {
+    foreach ($iterable ?? [] as $key => $value) {
       $modified[] = $modifier($value, $key);
     }
 
@@ -193,7 +193,7 @@ if (! function_exists('IterTools\iter_contains')) {
     // By this point in the function, we know it's either a simple match or a callback
     $matcher = is_callable($testOrKey) ? $testOrKey : fn (mixed $value) => $value == $testOrKey; // TODO: Can be replace by the "are" helper when/if implemented
 
-    foreach ($iterable as $key => $value) {
+    foreach ($iterable ?? [] as $key => $value) {
       if ($matcher($value, $key)) {
         return true;
       }
@@ -266,7 +266,7 @@ if (! function_exists('IterTools\pure_iter_pop')) {
     $returnedArray = [];
     $currentCount = -1;
 
-    foreach ($iterable as $value) {
+    foreach ($iterable ?? [] as $value) {
       $currentCount++;
 
       if ($currentCount === $count - 1) {
@@ -381,7 +381,7 @@ if (! function_exists('IterTools\iter_has')) {
 
     // TODO: Definitely a more efficient algorithm to use here
     foreach ($key as $desiredKey) {
-      foreach ($iterable as $listKey => $listValue) {
+      foreach ($iterable ?? [] as $listKey => $listValue) {
         if ($listKey === $desiredKey) {
           continue 2;
         }
@@ -434,7 +434,7 @@ if (! function_exists('IterTools\iter_sole')) {
     if (is_callable($argument)) {
       $foundItem = null;
       $wasItemFound = false; // We have to track this separately because null may be the item we're looking for.
-      foreach ($iterable as $key => $value) {
+      foreach ($iterable ?? [] as $key => $value) {
         if ($argument($value, $key)) {
           if (($wasItemFound)) {
             // An item was already found
@@ -543,5 +543,17 @@ if (! function_exists('IterTools\iter_get')) {
     }
 
     return $getDefault();
+  }
+}
+
+if (! function_exists('IterTools\iter_keys')) {
+  /**
+   * Returns an array of all root-level keys this iterable has.
+   * @param iterable|null $iterable
+   * @return array
+   */
+  function iter_keys(?iterable $iterable): array
+  {
+    return iter_map($iterable, fn ($value, $key) => $key);
   }
 }
