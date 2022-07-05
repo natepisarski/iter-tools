@@ -1,16 +1,19 @@
 <?php
 namespace IterTools\Tests;
 
+use IterTools\MultipleItemsFoundException;
 use PHPUnit\Framework\TestCase;
 use function IterTools\iter_all;
 use function IterTools\iter_count;
 use function IterTools\iter_filter;
+use function IterTools\iter_has;
 use function IterTools\iter_map;
 use function IterTools\iter_pop;
 use function IterTools\iter_push;
 use function IterTools\iter_reduce;
 use function IterTools\iter_skip;
 use function IterTools\iter_slice;
+use function IterTools\iter_sole;
 use function IterTools\iter_some;
 use function IterTools\iter_take;
 use function IterTools\iter_values;
@@ -168,5 +171,43 @@ final class IdentityTest extends TestCase
     {
       $ourArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       $this->assertEquals([2 => 3, 3 => 4], iter_slice($ourArray, 2, 2));
+    }
+
+    public function testHas()
+    {
+      $ourArray = [
+        'joe' => 14,
+        'john' => 2,
+        'jim' => 66,
+      ];
+
+      $this->assertTrue(iter_has($ourArray, ['joe', 'jim'])); // Fully t rue
+      $this->assertFalse(iter_has($ourArray, 'jack')); // Fully false
+      $this->assertFalse(iter_has($ourArray, ['joe', 'jack'])); // Partially true
+    }
+
+    public function testSole()
+    {
+      // Scenario 1: Used to return the first item in an array
+      $ourArray = [4];
+      $this->assertEquals(4, iter_sole($ourArray));
+
+      $ourArray = [1, 2, 3, 4];
+
+      $this->expectException(MultipleItemsFoundException::class);
+      $firstValue = iter_sole($ourArray); // This line should throw the exception since more than one item exists.
+
+      // Scenario 2: With a callable function
+      $isEven = fn (int $x) => $x % 2 === 0;
+      $ourArray = [1, 3, 5, 6, 7, 9];
+
+      $this->assertEquals(6, iter_sole($ourArray, $isEven));
+      $ourArray = [...$ourArray, 10];
+      $this->expectException(MultipleItemsFoundException::class);
+      $firstValue = iter_sole($ourArray, $isEven);
+
+      // Scenario 3: With a key/value pair
+      $ourArray = ['a' => 1, 'b' => 2, 'c' => 3];
+      $this->assertEquals(2, iter_sole($ourArray, ['b' => 2]));
     }
 }

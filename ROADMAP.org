@@ -129,3 +129,6 @@
 - [ ] whereNull
 - [ ] wrap
 - [ ] zip
+
+* NOTES
+- [ ] Please test has / sole and then delete this message. Neither have been tested at all. Should test exceptions too.
