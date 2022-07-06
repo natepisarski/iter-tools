@@ -522,18 +522,24 @@ if (! function_exists('IterTools\iter_get')) {
    * Gets the item at this key. If the key isn't found, the default value is returned - which is null by default.
    * If your default value is callable, it's executed with no arguments. This way you can pass in a "thunk" to have its
    * value returned.
-   * @param iterable|null $iterable
+   * @param iterable|object|null $iterable |null $iterable
    * @param string|int $key
    * @param mixed|null $defaultValue
    * @return mixed
    */
-  function iter_get(?iterable $iterable, string|int $key, mixed $defaultValue = null): mixed
+  function iter_get(iterable|object|null $iterable, string|int $key, mixed $defaultValue = null): mixed
   {
     $getDefault = fn () => is_callable($defaultValue) ? $defaultValue() : $defaultValue;
 
     if (empty($iterable)) {
       return $getDefault();
     }
+
+    if (is_object($iterable) && !is_iterable($iterable)) {
+      return $iterable->$key ?? $getDefault();
+    }
+
+    // TODO: Should support objects as well
 
     // TODO: Can probably be significantly more performant
     foreach ($iterable as $iterableKey => $value) {
@@ -695,5 +701,74 @@ if (! function_exists('IterTools\iter_first')) {
     }
 
     return null;
+  }
+}
+
+if (! function_exists('IterTools\iter_where')) {
+  /**
+   * Returns any items in the collection that meet the criteria of your test. You can call this function in 3 separate ways:
+   *
+   * 1) Truthiness Test
+         iter_where([ ['id' => 1], ['id' => 2], ['id' => 0] ], 'id') === [['id' => 1], ['id' => 2]]
+   *
+   * 2) Implicit Loose Equality Check
+         iter_where([ ['id' => 1], ['id' => 2], ['id' => 0] ], 'id', '2') === [['id' => 2]]
+   *
+   * 3) Comparison Operator. For all possible values, @see ComparisonOperator.
+         iter_where([ ['id' => 1], ['id' => 2], ['id' => 0] ], 'id', '>', '0') === [['id' => 1], ['id' => 2]]
+   * @param iterable|null $iterable
+   * @param mixed $key The key to look for in the sub-arrays, or objects.
+   * @param mixed $comparisonOperatorOrValue
+   * @param mixed|null $value
+   * @return array
+   * @throws UnrecognizedComparisonOperatorException
+   */
+  function iter_where(?iterable $iterable, mixed $key, mixed $comparisonOperatorOrValue = null, mixed $value = null): array
+  {
+    // There are 3 distinct modes here: truthiness check, loose equality check, and comparison operator check.
+
+    if (empty($comparisonOperatorOrValue) && empty($value)) {
+      // TODO: Should this automatically call iter_values?
+      // Mode 1: Truthiness Check - only items who have a truthy key will be kept.
+      return iter_values(iter_filter($iterable, fn ($item) => iter_get($item, $key)));
+    }
+
+    if (empty($value)) {
+      // Mode 2: Implicit Loose Comparison
+      return iter_values(
+        iter_filter($iterable, fn ($item) => iter_get($item, $key) == $comparisonOperatorOrValue)
+      );
+    }
+
+    // Mode 3: Explicit comparison operator
+    $returnedArray = [];
+    foreach ($iterable ?? [] as $item) {
+      $thisValue = iter_get($item, $key);
+      $comparison = ComparisonOperator::tryFrom($comparisonOperatorOrValue);
+
+      if (empty($comparison)) {
+        // We don't recognize the comparison operator that was used.
+        throw new UnrecognizedComparisonOperatorException("Comparison Operator '$comparisonOperatorOrValue' was not recognized as a valid operation");
+      }
+
+      $passed = match ($comparison) {
+        ComparisonOperator::Equals, ComparisonOperator::LooseEquals => $thisValue == $value,
+        ComparisonOperator::LooseNotEquals => $thisValue != $value,
+        ComparisonOperator::StrictEquals => $thisValue === $value,
+        ComparisonOperator::StrictNotEquals => $thisValue !== $value,
+        ComparisonOperator::GreaterThan => $thisValue > $value,
+        ComparisonOperator::LessThan => $thisValue < $value,
+        ComparisonOperator::GreaterThanOrEqualTo => $thisValue >= $value,
+        ComparisonOperator::LessThanOrEqualTo => $thisValue <= $value,
+        ComparisonOperator::In => iter_some($value, $thisValue),
+        ComparisonOperator::NotIn => ! iter_some($value, $thisValue),
+      };
+
+      if ($passed) {
+        $returnedArray[] = $item;
+      }
+    }
+
+    return $returnedArray;
   }
 }

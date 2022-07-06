@@ -27,6 +27,7 @@ use function IterTools\iter_values;
 use function IterTools\iter_when;
 use function IterTools\iter_when_empty;
 use function IterTools\iter_when_not_empty;
+use function IterTools\iter_where;
 
 final class IdentityTest extends TestCase
 {
@@ -272,6 +273,10 @@ final class IdentityTest extends TestCase
       $this->assertEquals(4, iter_get($ourArray, 'john', 4)); // Scalar default values
 
       $this->assertEquals(10, iter_get($ourArray, 'john', fn () => 10)); // Thunk
+
+      // You can also use get on objects
+      $object = (object) ['id' => 4, 'name' => 'Nate'];
+      $this->assertEquals(4, iter_get($object, 'id'));
     }
 
     public function testKeys()
@@ -361,5 +366,34 @@ final class IdentityTest extends TestCase
       $this->assertNull(iter_first([]));
 
       $this->assertEquals(2, iter_first($ourArray, fn (int $number) => $number % 2 === 0));
+    }
+
+    public function testWhere()
+    {
+      $ourArray = [
+        ['id' => 1, 'name' => 'Joe'],
+        ['id' => 2, 'name' => 'Jim'],
+        ['id' => 3, 'name' => 'John'],
+        ['id' => null, 'name' => 'Nelly'],
+      ];
+
+      // Mode 1: Truthiness
+      $this->assertEquals([
+        ['id' => 1, 'name' => 'Joe'],
+        ['id' => 2, 'name' => 'Jim'],
+        ['id' => 3, 'name' => 'John'],
+      ], iter_where($ourArray, 'id'));
+
+      // Mode 2: Loose Comparison
+      $this->assertEquals([
+        ['id' => 2, 'name' => 'Jim'],
+      ], iter_where($ourArray, 'id', 2));
+
+      // Mode 3: Comparison Operator
+      // TODO: Should test all the comparison operators here
+      $this->assertEquals([
+        ['id' => 2, 'name' => 'Jim'],
+        ['id' => 3, 'name' => 'John'],
+      ], iter_where($ourArray, 'id', '>', 1));
     }
 }
