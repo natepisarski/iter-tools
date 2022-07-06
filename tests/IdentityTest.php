@@ -40,7 +40,7 @@ final class IdentityTest extends TestCase
     /** Tests to make sure that function imports work; and that the all() function is working as intended. */
     public function testAll(): void
     {
-        $this->assertEquals([1, 2, 3], \IterTools\iter_all([1, 2, 3]));
+        $this->assertEquals([1, 2, 3], iter_all([1, 2, 3]));
     }
 
     /** Tests to see if this counts arrays properly */
