@@ -720,11 +720,20 @@ if (! function_exists('IterTools\iter_where')) {
    * @param mixed $key The key to look for in the sub-arrays, or objects.
    * @param mixed $comparisonOperatorOrValue
    * @param mixed|null $value
+   * @param bool $useStrictComparisonsByDefault Whether or not to compare values using strict comparisons unless otherwise stated.
    * @return array
    * @throws UnrecognizedComparisonOperatorException
    */
-  function iter_where(?iterable $iterable, mixed $key, mixed $comparisonOperatorOrValue = null, mixed $value = null): array
+  function iter_where(
+    ?iterable $iterable,
+    mixed $key,
+    mixed $comparisonOperatorOrValue = null,
+    mixed $value = null,
+    bool $useStrictComparisonsByDefault = false,
+  ): array
   {
+    $equalityComparator = fn ($x, $y) => $useStrictComparisonsByDefault ? $x === $y : $x == $y;
+
     // There are 3 distinct modes here: truthiness check, loose equality check, and comparison operator check.
 
     if (empty($comparisonOperatorOrValue) && empty($value)) {
@@ -734,9 +743,9 @@ if (! function_exists('IterTools\iter_where')) {
     }
 
     if (empty($value)) {
-      // Mode 2: Implicit Loose Comparison
+      // Mode 2: Implicit Comparison
       return iter_values(
-        iter_filter($iterable, fn ($item) => iter_get($item, $key) == $comparisonOperatorOrValue)
+        iter_filter($iterable, fn ($item) => $equalityComparator(iter_get($item, $key), $comparisonOperatorOrValue))
       );
     }
 
@@ -752,7 +761,8 @@ if (! function_exists('IterTools\iter_where')) {
       }
 
       $passed = match ($comparison) {
-        ComparisonOperator::Equals, ComparisonOperator::LooseEquals => $thisValue == $value,
+        ComparisonOperator::Equals => $equalityComparator($thisValue, $value),
+        ComparisonOperator::LooseEquals => $thisValue == $value,
         ComparisonOperator::LooseNotEquals => $thisValue != $value,
         ComparisonOperator::StrictEquals => $thisValue === $value,
         ComparisonOperator::StrictNotEquals => $thisValue !== $value,
@@ -770,5 +780,22 @@ if (! function_exists('IterTools\iter_where')) {
     }
 
     return $returnedArray;
+  }
+}
+
+if (! function_exists('IterTools\iter_where_strict')) {
+  /**
+   * Uses the same signature as iter_where, except it will use strict comparisons by default. You can still use a loose
+   * comparison by passing in '==' as the comparison operator.
+   * @param iterable|null $iterable
+   * @param mixed $key The key to look for in the sub-arrays / objects
+   * @param mixed|null $comparisonOperatorOrValue See ComparisonOperator for a full list of options
+   * @param mixed|null $value The value to search for if using a comparison operator.
+   * @return array
+   * @throws UnrecognizedComparisonOperatorException
+   */
+  function iter_where_strict(?iterable $iterable, mixed $key, mixed $comparisonOperatorOrValue = null, mixed $value = null): array
+  {
+    return iter_where($iterable, $key, $comparisonOperatorOrValue, $value, useStrictComparisonsByDefault: true);
   }
 }

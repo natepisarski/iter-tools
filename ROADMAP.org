@@ -1,6 +1,6 @@
 -*- mode: org -*-
 
-* Iter Tools method roadmap [24/128]
+* Iter Tools method roadmap [25/128]
 - [X] all
 - [ ] average
 - [ ] avg
@@ -117,7 +117,7 @@
 - [X] whenEmpty
 - [X] whenNotEmpty
 - [X] where
-- [ ] whereStrict
+- [X] whereStrict
 - [ ] whereBetween
 - [ ] whereIn
 - [ ] whereInStrict
