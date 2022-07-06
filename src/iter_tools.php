@@ -609,3 +609,45 @@ if (! function_exists('IterTools\iter_is_not_empty')) {
     return iter_not_empty($iterable);
   }
 }
+
+if (! function_exists('IterTools\iter_when')) {
+  /**
+   * When your condition evaluates to true, run a specific callback. You may also pass in another callback for when it
+   * evaluates to falsy.
+   * @param iterable|null $iterable
+   * @param mixed $truthyOrFalsy Something that can be tested as a boolean value. Likely to be some expression in client code.
+   * @param callable $onTruthy A callback to execute when it's truthy. This takes (?iterable, truthyOrFalsy) where iterable is a reference.
+   * @param callable|null $onFalsy A callback to execute when it's falsy. This takes (?iterable, truthyOrFalsy) where iterable is a reference
+   * @return iterable|null Returns the Collection we were given. The return value will not likely be used.
+   */
+  function iter_when(?iterable &$iterable, mixed $truthyOrFalsy, callable $onTruthy, ?callable $onFalsy = null): ?iterable
+  {
+    if ($truthyOrFalsy) {
+      $onTruthy($iterable, $truthyOrFalsy);
+    } else if ($onFalsy) {
+      $onFalsy($iterable, $truthyOrFalsy);
+    }
+
+    return $iterable;
+  }
+}
+
+if (! function_exists('IterTools\iter_when_empty')) {
+  /**
+   * When your iterable is empty or null, run a specific callback. You may pass in another callback for when it is not
+   * empty.
+   * @param iterable|null $iterable
+   * @param callable $onTruthy A callback to execute when it's truthy. This takes (?iterable) as a reference.
+   * @param callable|null $onFalsy An optional callback to execute when it's falsy. This takes (?iterable) as a reference.
+   * @return iterable|null
+   */
+  function iter_when_empty(?iterable &$iterable, callable $onTruthy, ?callable $onFalsy = null): ?iterable
+  {
+    return iter_when(
+      $iterable,
+      iter_empty($iterable),
+      $onTruthy,
+      $onFalsy,
+    );
+  }
+}

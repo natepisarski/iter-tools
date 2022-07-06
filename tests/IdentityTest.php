@@ -23,6 +23,8 @@ use function IterTools\iter_sole;
 use function IterTools\iter_some;
 use function IterTools\iter_take;
 use function IterTools\iter_values;
+use function IterTools\iter_when;
+use function IterTools\iter_when_empty;
 
 final class IdentityTest extends TestCase
 {
@@ -299,5 +301,34 @@ final class IdentityTest extends TestCase
       $this->assertFalse(iter_not_empty([]));
       $this->assertFalse(iter_not_empty(null));
       $this->assertTrue(iter_not_empty([1]));
+    }
+
+    public function testWhen()
+    {
+      $ourArray = [1, 2, 3, 4];
+      $pusher = fn ($numberToPush) => function (&$collection) use ($numberToPush) {
+        $collection = iter_push($collection, $numberToPush);
+      };
+
+      iter_when($ourArray, true, $pusher(5));
+      $this->assertEquals([1, 2, 3, 4, 5], $ourArray);
+      iter_when($ourArray, false, $pusher(6));
+      $this->assertEquals([1, 2, 3, 4, 5], $ourArray);
+    }
+
+    public function testWhenEmpty()
+    {
+      $ourArray = [];
+      iter_when_empty($ourArray, function (&$collection) {
+        $collection = iter_push($collection, 5);
+      });
+
+      $this->assertEquals([5], $ourArray);
+
+      iter_when_empty($ourArray, function (&$collection) {
+        $collection = iter_push($collection, 6);
+      });
+
+      $this->assertEquals([5], $ourArray);
     }
 }

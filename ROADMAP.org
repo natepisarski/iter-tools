@@ -1,6 +1,6 @@
 -*- mode: org -*-
 
-* Iter Tools method roadmap [19/128]
+* Iter Tools method roadmap [21/128]
 - [X] all
 - [ ] average
 - [ ] avg
@@ -113,8 +113,8 @@
 - [ ] unlessNotEmpty
 - [ ] unwrap
 - [X] values
-- [ ] when
-- [ ] whenEmpty
+- [X] when
+- [X] whenEmpty
 - [ ] whenNotEmpty
 - [ ] where
 - [ ] whereStrict
@@ -129,6 +129,3 @@
 - [ ] whereNull
 - [ ] wrap
 - [ ] zip
-
-* NOTES
-- [ ] Please test has / sole and then delete this message. Neither have been tested at all. Should test exceptions too.
