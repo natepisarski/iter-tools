@@ -25,6 +25,7 @@ use function IterTools\iter_take;
 use function IterTools\iter_values;
 use function IterTools\iter_when;
 use function IterTools\iter_when_empty;
+use function IterTools\iter_when_not_empty;
 
 final class IdentityTest extends TestCase
 {
@@ -330,5 +331,24 @@ final class IdentityTest extends TestCase
       });
 
       $this->assertEquals([5], $ourArray);
+    }
+
+    public function testWhenNotEmpty()
+    {
+      $ourArray = [1];
+      iter_when_not_empty($ourArray, function (&$collection) {
+        $collection = iter_push($collection, 5);
+      });
+
+      $this->assertEquals([1, 5], $ourArray);
+
+      $ourArray = [];
+      iter_when_not_empty($ourArray, function (&$collection) {
+        $collection = iter_push($collection, 5);
+      }, function (&$collection) {
+        $collection = iter_push($collection, 6);
+      });
+
+      $this->assertEquals([6], $ourArray);
     }
 }

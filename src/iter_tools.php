@@ -637,8 +637,8 @@ if (! function_exists('IterTools\iter_when_empty')) {
    * When your iterable is empty or null, run a specific callback. You may pass in another callback for when it is not
    * empty.
    * @param iterable|null $iterable
-   * @param callable $onTruthy A callback to execute when it's truthy. This takes (?iterable) as a reference.
-   * @param callable|null $onFalsy An optional callback to execute when it's falsy. This takes (?iterable) as a reference.
+   * @param callable $onTruthy A callback to execute when it's empty. This takes (?iterable) as a reference.
+   * @param callable|null $onFalsy An optional callback to execute when it's not empty. This takes (?iterable) as a reference.
    * @return iterable|null
    */
   function iter_when_empty(?iterable &$iterable, callable $onTruthy, ?callable $onFalsy = null): ?iterable
@@ -646,6 +646,26 @@ if (! function_exists('IterTools\iter_when_empty')) {
     return iter_when(
       $iterable,
       iter_empty($iterable),
+      $onTruthy,
+      $onFalsy,
+    );
+  }
+}
+
+if (! function_exists('IterTools\iter_when_not_empty')) {
+  /**
+   * When your iterable is NOT empty or null, run a specific callback. You may pass in another callback for when it IS
+   * empty. This is the inverse of iter_when_empty
+   * @param iterable|null $iterable
+   * @param callable $onTruthy The callback to run when it's not empty. This takes (?iterable) as a reference.
+   * @param callable|null $onFalsy An optional callback to execute when it's not empty.
+   * @return iterable|null
+   */
+  function iter_when_not_empty(?iterable  &$iterable, callable $onTruthy, ?callable $onFalsy = null): ?iterable
+  {
+    return iter_when(
+      $iterable,
+      ! iter_empty($iterable),
       $onTruthy,
       $onFalsy,
     );
