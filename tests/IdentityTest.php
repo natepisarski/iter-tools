@@ -9,6 +9,7 @@ use function IterTools\iter_each;
 use function IterTools\iter_empty;
 use function IterTools\iter_every;
 use function IterTools\iter_filter;
+use function IterTools\iter_first;
 use function IterTools\iter_get;
 use function IterTools\iter_has;
 use function IterTools\iter_keys;
@@ -350,5 +351,15 @@ final class IdentityTest extends TestCase
       });
 
       $this->assertEquals([6], $ourArray);
+    }
+
+    public function testFirst()
+    {
+      $ourArray = [1, 2, 3];
+      $this->assertEquals(1, iter_first($ourArray));
+
+      $this->assertNull(iter_first([]));
+
+      $this->assertEquals(2, iter_first($ourArray, fn (int $number) => $number % 2 === 0));
     }
 }

@@ -671,3 +671,29 @@ if (! function_exists('IterTools\iter_when_not_empty')) {
     );
   }
 }
+
+if (! function_exists('IterTools\iter_first')) {
+  /**
+   * Returns the first item in the iterable. If you pass in the predicate, this will return the value for the first
+   * item it holds true for. The form of the predicate is (value: T, key: mixed) => bool
+   *
+   * If the list is empty, or none held true for the predicate, then null is returned.
+   * @param iterable|null $iterable
+   * @param callable|null $predicate
+   * @return mixed
+   */
+  function iter_first(?iterable $iterable, ?callable $predicate = null): mixed
+  {
+    foreach ($iterable ?? [] as $key => $value) {
+      if (! $predicate) {
+        return $value;
+      }
+
+      if ($predicate($value, $key)) {
+        return $value;
+      }
+    }
+
+    return null;
+  }
+}

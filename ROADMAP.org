@@ -1,6 +1,6 @@
 -*- mode: org -*-
 
-* Iter Tools method roadmap [22/128]
+* Iter Tools method roadmap [23/128]
 - [X] all
 - [ ] average
 - [ ] avg
@@ -27,7 +27,7 @@
 - [X] every
 - [ ] except
 - [X] filter
-- [ ] first
+- [X] first
 - [ ] firstWhere
 - [ ] flatMap
 - [ ] flatten
