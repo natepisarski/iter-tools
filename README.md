@@ -1,18 +1,48 @@
-# Iter Tools
-Use Laravel Collection methods on any kind of data: arrays, generator functions, laravel collections, literally anything.
+# Laravel Iter Tools
+PHP has functions for dealing with arrays (`array_map`, `array_filter`, `array_reduce`, `array_keys`, etc). Meanwhile, Laravel has its own "list" primitive: `Collection`.
 
-This package has the exact same API as Laravel Collections.
+This package keeps the API from Laravel's `Collection` intact, while working on:
+
+* `Collection` objects
+* `array`'s
+* `generator*` functions
+* `iterable`'s
 
 # Purpose
-In a Laravel project, it's not uncommon to try to call `->map()` on an array. Or to call `array_map()` on a Collection.
+In a Laravel project, this will fail:
 
-This package provides 1 consistent interface across all of these different data types. 
+```php
+array_map(fn ($x) => $x, collect())
+```
+
+so will this
+
+```php
+[]->map(fn ($x) => $x)
+```
+
+This can lead to real-world bugs because of PHP's weak dynamic types. For instance, you have no clue if this code will work or crash:
+
+```php
+public function do_stuff($list): iterable
+{
+  $list->map(fn ($x) => echo $x);
+}
+```
+
+but you **know** this will work:
+
+```php
+public function do_stuff($list): iterable
+{
+  iter_map($list, fn ($x) => echo $x);
+}
+```
 
 # Special Notes
 - `null` is, for all intents and purposes, considered an empty Collection for this library. This prevents things like `iter_values($x)` from crashing.
 
 # API
-(This will be filled in when the package is 'complete'. See the ROADMAP org mode document for progress)
 
 ## `iter_all`
 Returns the underlying iterable.
